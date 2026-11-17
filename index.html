@@ -5,35 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Trail race survey - winter 2026</title>
 <style>
-:root{--green:#1f5d3a;--green-d:#174a2e;--bg:#f4f1ea;--card:#fff;--line:#d9d4c7;--text:#1d241f;--muted:#5d675f;--err:#b3261e}
+:root{--brand:#8a1c24;--brand-d:#6b1219;--tint:#f8eaea;--bg:#f8f4f2;--card:#fff;--line:#ddd3cf;--text:#231a1a;--muted:#6a5d5d;--warn:#9a3412}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:680px;margin:0 auto;padding:20px 16px 60px}
-header h1{font-size:1.6rem;margin:12px 0 6px}
+header{border-top:6px solid var(--brand);padding-top:14px}
+header h1{font-size:1.6rem;margin:6px 0 6px;color:var(--brand)}
 header p{color:var(--muted);margin:0 0 8px}
-.bar{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2}
-.bar div{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
-.bar span{display:block;height:100%;width:0;background:var(--green);transition:width .2s}
-fieldset{border:1px solid var(--line);background:var(--card);border-radius:12px;margin:16px 0;padding:16px}
-fieldset.invalid{border-color:var(--err)}
-legend{font-weight:650;padding:0 6px;max-width:100%}
+.meta{display:flex;justify-content:space-between;font-size:.9rem;color:var(--muted);margin:18px 0 6px}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--brand);transition:width .25s}
+fieldset{border:1px solid var(--line);background:var(--card);border-radius:12px;margin:16px 0;padding:18px 16px}
+fieldset.hidden{display:none}
+fieldset.invalid{border-color:var(--warn)}
+legend{font-weight:650;padding:0 6px;max-width:100%;font-size:1.05rem}
 .hint{color:var(--muted);font-size:.9rem;margin:2px 0 10px;display:block}
-label.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;cursor:pointer}
-label.opt:has(input:checked){border-color:var(--green);background:#eaf3ed}
+label.opt{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin:8px 0;cursor:pointer}
+label.opt:hover{border-color:var(--brand)}
+label.opt:has(input:checked){border-color:var(--brand);background:var(--tint)}
 label.opt.off{opacity:.45;cursor:not-allowed}
-input[type=radio],input[type=checkbox]{margin-top:4px;accent-color:var(--green)}
+input[type=radio],input[type=checkbox]{margin-top:4px;accent-color:var(--brand)}
 textarea,input[type=email]{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
-textarea{min-height:100px;resize:vertical}
-.err{color:var(--err);font-size:.9rem;display:none;margin-top:6px}
+textarea:focus,input[type=email]:focus{outline:2px solid var(--brand);outline-offset:1px}
+textarea{min-height:120px;resize:vertical}
+.err{color:var(--warn);font-size:.9rem;display:none;margin-top:6px}
 .invalid .err{display:block}
-button{font:inherit;font-weight:650;background:var(--green);color:#fff;border:0;border-radius:10px;padding:12px 22px;cursor:pointer}
-button:hover{background:var(--green-d)}
-button:disabled{opacity:.6;cursor:wait}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:8px}
+button{font:inherit;font-weight:650;background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 24px;cursor:pointer}
+button:hover{background:var(--brand-d)}
+button:focus-visible{outline:3px solid #d9a5a8;outline-offset:2px}
+button.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+button.ghost:hover{background:var(--tint)}
+button:disabled{opacity:.5;cursor:default}
+.hidden{display:none}
 .hp{position:absolute;left:-9999px;height:0;overflow:hidden}
 .note{color:var(--muted);font-size:.9rem}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:16px}
-.hidden{display:none}
-#status{margin:10px 0;color:var(--err)}
+.card h2,.card h3{color:var(--brand);margin-top:0}
+#status{margin:10px 0;color:var(--warn)}
 </style>
 </head>
 <body>
@@ -44,12 +53,17 @@ button:disabled{opacity:.6;cursor:wait}
 </header>
 
 <div id="survey">
-<div class="bar"><div><span id="progress"></span></div></div>
+<div class="meta"><span id="count">Question 1 of 12</span><span id="pct">0%</span></div>
+<div class="bar"><span id="progress"></span></div>
 <form id="form" novalidate>
 <div id="questions"></div>
 <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 <div id="status" role="alert"></div>
-<button type="submit" id="submit">Submit survey</button>
+<div class="nav">
+<button type="button" class="ghost" id="back">Back</button>
+<button type="button" id="next">Next</button>
+<button type="submit" id="submit" class="hidden">Submit survey</button>
+</div>
 </form>
 </div>
 
@@ -64,7 +78,7 @@ button:disabled{opacity:.6;cursor:wait}
 <form id="drawForm" novalidate>
 <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
 <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-<div class="err" id="emailErr" style="display:none">Please enter a valid email address.</div>
+<div class="err" id="emailErr">Please enter a valid email address.</div>
 <p><button type="submit" id="drawBtn">Enter prize draw</button></p>
 </form>
 </div>
@@ -127,33 +141,31 @@ var QUESTIONS = [
 ];
 
 var qBox = document.getElementById('questions');
+var current = 0;
 
-function el(tag, attrs, html){
+function el(tag, attrs, text){
 var e = document.createElement(tag);
 for (var k in (attrs||{})) e.setAttribute(k, attrs[k]);
-if (html != null) e.textContent = html;
+if (text != null) e.textContent = text;
 return e;
 }
 
 QUESTIONS.forEach(function(q, qi){
-var fs = el('fieldset', {id:'fs-'+q.id});
-var lg = el('legend', {}, (qi+1)+'. '+q.text);
-fs.appendChild(lg);
+var fs = el('fieldset', {id:'fs-'+q.id, class:'hidden'});
+fs.appendChild(el('legend', {tabindex:'-1'}, (qi+1)+'. '+q.text));
 var hint = q.type==='single' ? 'Choose one' : q.type==='multi' ? (q.max ? 'Pick up to '+q.max : 'Tick all that apply') : 'Optional';
 fs.appendChild(el('span',{class:'hint'},hint));
 if (q.type==='text'){
-var ta = el('textarea',{name:q.id,maxlength:'1000',rows:'4'});
-fs.appendChild(ta);
+fs.appendChild(el('textarea',{name:q.id,maxlength:'1000',rows:'5'}));
 } else {
 q.options.forEach(function(opt){
 var lab = el('label',{class:'opt'});
-var inp = el('input',{type:q.type==='single'?'radio':'checkbox',name:q.id,value:opt});
-lab.appendChild(inp);
+lab.appendChild(el('input',{type:q.type==='single'?'radio':'checkbox',name:q.id,value:opt}));
 lab.appendChild(el('span',{},opt));
 fs.appendChild(lab);
 });
+fs.appendChild(el('div',{class:'err'}, q.type==='single' ? '⚠ Please choose an answer to continue.' : '⚠ Please choose at least one answer to continue.'));
 }
-fs.appendChild(el('div',{class:'err'}, q.type==='text' ? '' : 'Please choose '+(q.type==='single'?'an answer.':'at least one answer.')));
 qBox.appendChild(fs);
 });
 
@@ -161,8 +173,32 @@ function checkedValues(q){
 return Array.prototype.map.call(document.querySelectorAll('input[name="'+q.id+'"]:checked'), function(i){return i.value;});
 }
 
-function updateState(){
-var done = 0, total = QUESTIONS.filter(function(q){return !q.optional;}).length;
+function isValid(q){
+return q.optional || q.type==='text' || checkedValues(q).length > 0;
+}
+
+function showStep(i, focus){
+current = i;
+var total = QUESTIONS.length;
+QUESTIONS.forEach(function(q, qi){
+document.getElementById('fs-'+q.id).classList.toggle('hidden', qi !== i);
+});
+document.getElementById('count').textContent = 'Question '+(i+1)+' of '+total;
+var pct = Math.round(i/total*100);
+document.getElementById('pct').textContent = pct+'%';
+document.getElementById('progress').style.width = pct+'%';
+document.getElementById('back').style.visibility = i===0 ? 'hidden' : 'visible';
+var last = i === total-1;
+document.getElementById('next').classList.toggle('hidden', last);
+document.getElementById('submit').classList.toggle('hidden', !last);
+document.getElementById('status').textContent = '';
+if (focus){
+window.scrollTo({top:0,behavior:'smooth'});
+document.querySelector('#fs-'+QUESTIONS[i].id+' legend').focus({preventScroll:true});
+}
+}
+
+function updateLimits(){
 QUESTIONS.forEach(function(q){
 if (q.type==='multi' && q.max){
 var n = checkedValues(q).length;
@@ -172,15 +208,31 @@ i.disabled = off;
 i.parentNode.classList.toggle('off', off);
 });
 }
-if (!q.optional && (q.type==='text' ? true : checkedValues(q).length>0)) done++;
 });
-document.getElementById('progress').style.width = Math.round(done/total*100)+'%';
 }
+
 document.getElementById('form').addEventListener('change', function(e){
 var fs = e.target.closest('fieldset'); if (fs) fs.classList.remove('invalid');
-updateState();
+document.getElementById('status').textContent = '';
+updateLimits();
 });
-updateState();
+
+document.getElementById('form').addEventListener('keydown', function(e){
+if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON'){
+e.preventDefault();
+if (current < QUESTIONS.length-1) goNext();
+}
+});
+
+function goNext(){
+var q = QUESTIONS[current];
+var fs = document.getElementById('fs-'+q.id);
+if (!isValid(q)){ fs.classList.add('invalid'); return; }
+if (current < QUESTIONS.length-1) showStep(current+1, true);
+}
+
+document.getElementById('next').addEventListener('click', goNext);
+document.getElementById('back').addEventListener('click', function(){ if (current>0) showStep(current-1, true); });
 
 function post(params){
 var body = new URLSearchParams(params).toString();
@@ -193,15 +245,14 @@ return attempt().catch(function(){ return new Promise(function(r){setTimeout(r,1
 document.getElementById('form').addEventListener('submit', function(ev){
 ev.preventDefault();
 var status = document.getElementById('status'); status.textContent='';
-var firstBad = null;
-QUESTIONS.forEach(function(q){
-var fs = document.getElementById('fs-'+q.id);
-var bad = !q.optional && q.type!=='text' && checkedValues(q).length===0;
-fs.classList.toggle('invalid', bad);
-if (bad && !firstBad) firstBad = fs;
-});
-if (firstBad){ firstBad.scrollIntoView({behavior:'smooth',block:'center'}); status.textContent='Please answer the highlighted questions.'; return; }
-if (ENDPOINT.indexOf('PASTE_')===0){ status.textContent='This form is not connected yet.'; return; }
+for (var i = 0; i < QUESTIONS.length; i++){
+if (!isValid(QUESTIONS[i])){
+showStep(i, true);
+document.getElementById('fs-'+QUESTIONS[i].id).classList.add('invalid');
+status.textContent = 'Please answer this question before submitting.';
+return;
+}
+}
 var params = {type:'survey', website: ev.target.elements['website'].value};
 QUESTIONS.forEach(function(q){
 params[q.id] = q.type==='text' ? ev.target.elements[q.id].value.trim() : checkedValues(q).join(' | ');
@@ -232,6 +283,9 @@ btn.disabled=false; btn.textContent='Enter prize draw';
 err.textContent='Sorry, that did not send. Please try again.'; err.style.display='block';
 });
 });
+
+showStep(0, false);
+updateLimits();
 </script>
 </body>
 </html>
