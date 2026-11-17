@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trail race survey - winter 2026</title>
+<style>
+:root{--green:#1f5d3a;--green-d:#174a2e;--bg:#f4f1ea;--card:#fff;--line:#d9d4c7;--text:#1d241f;--muted:#5d675f;--err:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:20px 16px 60px}
+header h1{font-size:1.6rem;margin:12px 0 6px}
+header p{color:var(--muted);margin:0 0 8px}
+.bar{position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2}
+.bar div{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--green);transition:width .2s}
+fieldset{border:1px solid var(--line);background:var(--card);border-radius:12px;margin:16px 0;padding:16px}
+fieldset.invalid{border-color:var(--err)}
+legend{font-weight:650;padding:0 6px;max-width:100%}
+.hint{color:var(--muted);font-size:.9rem;margin:2px 0 10px;display:block}
+label.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;cursor:pointer}
+label.opt:has(input:checked){border-color:var(--green);background:#eaf3ed}
+label.opt.off{opacity:.45;cursor:not-allowed}
+input[type=radio],input[type=checkbox]{margin-top:4px;accent-color:var(--green)}
+textarea,input[type=email]{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+textarea{min-height:100px;resize:vertical}
+.err{color:var(--err);font-size:.9rem;display:none;margin-top:6px}
+.invalid .err{display:block}
+button{font:inherit;font-weight:650;background:var(--green);color:#fff;border:0;border-radius:10px;padding:12px 22px;cursor:pointer}
+button:hover{background:var(--green-d)}
+button:disabled{opacity:.6;cursor:wait}
+.hp{position:absolute;left:-9999px;height:0;overflow:hidden}
+.note{color:var(--muted);font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:16px}
+.hidden{display:none}
+#status{margin:10px 0;color:var(--err)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Trail race survey</h1>
+<p>12 quick questions, about 3 minutes. Your answers are anonymous: we don't ask for your name or email, and nothing here is linked to you.</p>
+</header>
+
+<div id="survey">
+<div class="bar"><div><span id="progress"></span></div></div>
+<form id="form" novalidate>
+<div id="questions"></div>
+<div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+<div id="status" role="alert"></div>
+<button type="submit" id="submit">Submit survey</button>
+</form>
+</div>
+
+<div id="thanks" class="hidden">
+<div class="card">
+<h2>Thank you, your answers are in.</h2>
+<p>That's your survey done and submitted.</p>
+</div>
+<div class="card" id="drawCard">
+<h3>Optional: enter the prize draw</h3>
+<p class="note">Your email goes into a completely separate list from your survey answers, so the two can't be matched up. Skip this if you'd rather not enter.</p>
+<form id="drawForm" novalidate>
+<input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+<div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+<div class="err" id="emailErr" style="display:none">Please enter a valid email address.</div>
+<p><button type="submit" id="drawBtn">Enter prize draw</button></p>
+</form>
+</div>
+<div class="card hidden" id="drawDone"><p>You're in the draw. Thanks again!</p></div>
+</div>
+</div>
+
+<script>
+var ENDPOINT = 'https://script.google.com/macros/s/AKfycbymfOe_rHRSQt9rZGQpNLKdOa1p4OZk2af_QnSV1WMg3bP4a8msAuKdeMwzifXKLVNC0g/exec';
+
+var QUESTIONS = [
+{id:'q1',type:'single',text:'When choosing a trail race, how important is the exact distance to you?',options:[
+'I only enter set, standard distances (10K, Half Marathon, Marathon, 50K)',
+'I mainly enter standard distances, though I occasionally do an odd distance',
+'I enter a mix of both and do not mind the exact distance as long as the route looks great']},
+{id:'q2',type:'single',text:'If you run (or plan to run) Ultra distances, what is your main distance goal over the next 12 to 24 months?',options:[
+'Any distance Ultra (the location and coastal terrain matter more to me than exact mileage)',
+'50K / ~34 miles (standard coastal ultra)',
+'50 miles',
+'100K',
+'100 miles',
+'Not interested in Ultras (I stick to 10K, Half Marathon, or Marathon)']},
+{id:'q3',type:'multi',max:2,text:'Think back to your favourite trail race finish. What gave you the biggest buzz afterwards?',options:[
+'Pushing through a tough physical or mental patch on my own',
+'Exploring a dramatic stretch of coast or trail I would not normally visit',
+'Sharing the achievement, photos, or Strava stats with friends and family',
+'The post-race atmosphere, medal, and swapping stories with other runners',
+'Beating a target time or ranking well in my age or gender category']},
+{id:'q4',type:'multi',max:2,text:'Before clicking "Book" on an event, what are the most critical things you need to check or sort first?',options:[
+'Course cut-off times and elevation profile',
+'Local accommodation availability and cost',
+'Getting buy-in from my partner or organising childcare',
+'Getting time off work',
+'Travel distance and driving time',
+'Nothing, I book on impulse and sort the details later']},
+{id:'q5',type:'multi',max:2,text:'When booking an event several months in advance, which pricing or booking features would make you most likely to commit early?',options:[
+'Getting the lowest possible price by booking early (Tier 1 early-bird pricing)',
+'Splitting the entry fee into equal monthly instalments',
+'Paying a £10 non-refundable deposit now, and paying the balance 1 month before race day',
+'Knowing I can get a full refund if I change my mind within 30 days',
+'Knowing I can transfer my entry to a friend or another race if injured']},
+{id:'q6',type:'single',text:'Thinking about your last away-from-home trail race, roughly how much did your travel and accommodation cost compared to the race entry fee?',options:[
+'I only enter local races (minimal travel and no overnight accommodation)',
+'Travel and accommodation cost roughly the same as the entry fee',
+'Travel and accommodation cost 2 to 3 times more than the entry fee',
+'Travel and accommodation cost 4 or more times more than the entry fee']},
+{id:'q7',type:'single',text:'How many trail races do you typically enter in a year?',options:['1 to 2 races','3 to 5 races','6 or more races']},
+{id:'q8',type:'single',text:'How far are you typically willing to travel for a trail race?',options:[
+"Mostly local (under 90 minutes' drive)",'Happy to drive 2 to 3 hours','Anywhere in the UK for a good weekend away']},
+{id:'q9',type:'single',text:'When you travel to an Endurancelife event, who usually comes with you?',options:[
+'I travel solo','Partner or friends (who spectate, walk, or run too)','Partner and children','A running club or group of mates']},
+{id:'q10',type:'single',text:"If you have children, would an organised kids' trail run or mini-orienteering session at the Event Village make it easier to justify a race weekend?",options:[
+'Yes, definitely (it would turn it into a proper family day out)',
+'Possibly, depending on the location and weather',
+'No, I prefer to keep race days as my own solo time away',
+'Not applicable (I do not have children)']},
+{id:'q11',type:'text',optional:true,text:'Outside of Endurancelife, what was your favourite UK trail or ultra race in 2026, and what made it stand out?'},
+{id:'q12',type:'multi',text:'Where do you regularly spend time online for running inspiration, routes, and updates?',options:[
+'Strava (clubs, routes, and following friends)','Instagram','Facebook','YouTube','TikTok','WhatsApp or running club chats','None of the above (I just read your emails)']}
+];
+
+var qBox = document.getElementById('questions');
+
+function el(tag, attrs, html){
+var e = document.createElement(tag);
+for (var k in (attrs||{})) e.setAttribute(k, attrs[k]);
+if (html != null) e.textContent = html;
+return e;
+}
+
+QUESTIONS.forEach(function(q, qi){
+var fs = el('fieldset', {id:'fs-'+q.id});
+var lg = el('legend', {}, (qi+1)+'. '+q.text);
+fs.appendChild(lg);
+var hint = q.type==='single' ? 'Choose one' : q.type==='multi' ? (q.max ? 'Pick up to '+q.max : 'Tick all that apply') : 'Optional';
+fs.appendChild(el('span',{class:'hint'},hint));
+if (q.type==='text'){
+var ta = el('textarea',{name:q.id,maxlength:'1000',rows:'4'});
+fs.appendChild(ta);
+} else {
+q.options.forEach(function(opt){
+var lab = el('label',{class:'opt'});
+var inp = el('input',{type:q.type==='single'?'radio':'checkbox',name:q.id,value:opt});
+lab.appendChild(inp);
+lab.appendChild(el('span',{},opt));
+fs.appendChild(lab);
+});
+}
+fs.appendChild(el('div',{class:'err'}, q.type==='text' ? '' : 'Please choose '+(q.type==='single'?'an answer.':'at least one answer.')));
+qBox.appendChild(fs);
+});
+
+function checkedValues(q){
+return Array.prototype.map.call(document.querySelectorAll('input[name="'+q.id+'"]:checked'), function(i){return i.value;});
+}
+
+function updateState(){
+var done = 0, total = QUESTIONS.filter(function(q){return !q.optional;}).length;
+QUESTIONS.forEach(function(q){
+if (q.type==='multi' && q.max){
+var n = checkedValues(q).length;
+document.querySelectorAll('input[name="'+q.id+'"]').forEach(function(i){
+var off = !i.checked && n >= q.max;
+i.disabled = off;
+i.parentNode.classList.toggle('off', off);
+});
+}
+if (!q.optional && (q.type==='text' ? true : checkedValues(q).length>0)) done++;
+});
+document.getElementById('progress').style.width = Math.round(done/total*100)+'%';
+}
+document.getElementById('form').addEventListener('change', function(e){
+var fs = e.target.closest('fieldset'); if (fs) fs.classList.remove('invalid');
+updateState();
+});
+updateState();
+
+function post(params){
+var body = new URLSearchParams(params).toString();
+function attempt(){
+return fetch(ENDPOINT, {method:'POST', mode:'no-cors', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:body});
+}
+return attempt().catch(function(){ return new Promise(function(r){setTimeout(r,1500);}).then(attempt); });
+}
+
+document.getElementById('form').addEventListener('submit', function(ev){
+ev.preventDefault();
+var status = document.getElementById('status'); status.textContent='';
+var firstBad = null;
+QUESTIONS.forEach(function(q){
+var fs = document.getElementById('fs-'+q.id);
+var bad = !q.optional && q.type!=='text' && checkedValues(q).length===0;
+fs.classList.toggle('invalid', bad);
+if (bad && !firstBad) firstBad = fs;
+});
+if (firstBad){ firstBad.scrollIntoView({behavior:'smooth',block:'center'}); status.textContent='Please answer the highlighted questions.'; return; }
+if (ENDPOINT.indexOf('PASTE_')===0){ status.textContent='This form is not connected yet.'; return; }
+var params = {type:'survey', website: ev.target.elements['website'].value};
+QUESTIONS.forEach(function(q){
+params[q.id] = q.type==='text' ? ev.target.elements[q.id].value.trim() : checkedValues(q).join(' | ');
+});
+var btn = document.getElementById('submit'); btn.disabled = true; btn.textContent='Submitting...';
+post(params).then(function(){
+document.getElementById('survey').classList.add('hidden');
+document.getElementById('thanks').classList.remove('hidden');
+window.scrollTo(0,0);
+}).catch(function(){
+btn.disabled=false; btn.textContent='Submit survey';
+status.textContent='Sorry, that did not send. Please check your connection and try again.';
+});
+});
+
+document.getElementById('drawForm').addEventListener('submit', function(ev){
+ev.preventDefault();
+var email = document.getElementById('email').value.trim();
+var err = document.getElementById('emailErr');
+if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.style.display='block'; return; }
+err.style.display='none';
+var btn = document.getElementById('drawBtn'); btn.disabled=true; btn.textContent='Entering...';
+post({type:'draw', email:email, website: ev.target.elements['website'].value}).then(function(){
+document.getElementById('drawCard').classList.add('hidden');
+document.getElementById('drawDone').classList.remove('hidden');
+}).catch(function(){
+btn.disabled=false; btn.textContent='Enter prize draw';
+err.textContent='Sorry, that did not send. Please try again.'; err.style.display='block';
+});
+});
+</script>
+</body>
+</html>
