@@ -6,88 +6,104 @@
 <title>Trail race survey - winter 2026</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 230 230'%3E%3Cpath d='M124.196 54.3116L177.226 108.319C179.948 111.14 179.948 115.719 177.226 118.6L124.196 172.554C121.48 175.402 115.95 177.675 112.045 177.615L78.5269 177.325C74.6419 177.245 73.7301 174.94 76.4787 172.191L129.706 118.534C132.521 115.726 132.521 111.147 129.706 108.326L76.7628 54.754C74.0472 51.9327 74.9787 49.6138 78.877 49.5477L112.045 49.2832C115.95 49.2039 121.48 51.4969 124.196 54.3116ZM208.312 51.0011C187.982 20.2841 153.155 0 113.565 0C50.8557 0 0 50.8427 0 113.572C0 176.287 50.8491 227.137 113.565 227.137C153.321 227.137 188.253 206.674 208.531 175.772C206.099 176.902 203.436 177.655 201.236 177.609L167.704 177.318C163.826 177.239 162.908 174.933 165.663 172.184L218.884 118.527C221.705 115.719 221.705 111.14 218.884 108.319L165.954 54.7475C163.238 51.9262 164.17 49.6069 168.074 49.5409L201.236 49.2767C203.357 49.2437 205.934 49.9374 208.312 51.0011Z'/%3E%3C/svg%3E">
 <style>
-:root{--brand:#d12a1e;--brand-d:#b3221a;--halo:rgba(209,42,30,.14);--line:#e4e4e4;--text:#111;--muted:#8a8a8a;--warn:#b3261e}
+:root{--brand:#e00000;--brand-d:#c40000;--ink:#0a0a0a;--muted:#707070;--line:#e6e6e6;--warn:#b3261e}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:#fff;color:var(--text);font:17px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-.topbar{position:fixed;top:0;left:0;right:0;height:8px;background:#f0f0f0;z-index:10}
-.topbar span{display:block;height:100%;width:0;background:var(--brand);transition:width .3s ease}
-.wrap{max-width:660px;margin:0 auto;padding:56px 22px 90px}
-.logo{display:block;height:40px;width:auto;margin:0 0 72px}
-.intro{color:var(--muted);font-size:.95rem;margin:0 0 18px}
-.qlabel{font-size:1.05rem;font-weight:600;color:#7d7d7d;margin:0 0 14px}
-.qlabel .of{color:#b0b0b0;font-weight:500}
-.q{margin:0}
-.q.hidden{display:none}
-.q h2{font-size:clamp(1.7rem,5.2vw,2.6rem);line-height:1.14;font-weight:800;letter-spacing:-.02em;margin:0 0 12px;outline:none}
-.hint{display:block;color:var(--muted);font-size:.95rem;margin:0 0 28px}
-.opts{display:flex;flex-direction:column;gap:16px}
-label.opt{position:relative;display:flex;align-items:center;gap:18px;padding:20px 28px;border:1.5px solid var(--line);border-radius:36px;cursor:pointer;background:#fff;transition:border-color .15s,box-shadow .15s}
-label.opt:hover{border-color:#c9c9c9}
+body{margin:0;background:#fff;color:var(--ink);font:16px/1.5 Inter,"Helvetica Neue",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.topbar{position:fixed;top:0;left:0;right:0;height:6px;background:#f5f5f5;z-index:10}
+.topbar span{display:block;height:100%;width:0;background:var(--brand);transition:width .5s ease}
+.wrap{max-width:672px;margin:0 auto;padding:30px 20px 80px}
+.logo{display:block;height:36px;width:auto;margin:0 0 64px}
+.hidden{display:none!important}
+
+.eyebrow{margin:0;font-size:14px;line-height:20px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--brand)}
+h1.title{margin:24px 0 0;font-size:36px;line-height:1.05;font-weight:800;letter-spacing:-.02em}
+.lead{margin:24px 0 0;font-size:18px;line-height:1.625}
+.fine{margin:24px 0 0;font-size:16px;line-height:26px;color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-size:14px;font-weight:500;line-height:20px;border:0;cursor:pointer;border-radius:18.8px;white-space:nowrap;transition:background .15s,opacity .15s}
+.btn svg{width:16px;height:16px;flex:0 0 auto}
+.btn.primary{height:40px;padding:0 32px;background:var(--brand);color:#fafafa}
+.btn.primary:hover:not(:disabled){background:var(--brand-d)}
+.btn.primary:disabled{opacity:.5;cursor:not-allowed}
+.btn.lg{height:48px;padding:0 28px;font-size:16px;line-height:24px;margin-top:24px}
+.btn.ghost{padding:8px 16px;background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:#f5f5f5}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.qlabel{margin:0;font-size:14px;line-height:20px;font-weight:600;color:var(--muted)}
+.qlabel .of{opacity:.6}
+.q h2{margin:8px 0 0;font-size:24px;line-height:1.375;font-weight:800;letter-spacing:-.02em;outline:none}
+.hint{margin:8px 0 0;font-size:16px;line-height:24px;color:var(--muted)}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.hint + .opts{margin-top:16px}
+label.opt{position:relative;display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:24.8px;background:#fff;font-size:15px;line-height:22.5px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.04);transition:border-color .15s,box-shadow .15s}
+label.opt:hover{border-color:#cfcfcf}
 label.opt input{position:absolute;opacity:0;pointer-events:none}
-.mark{flex:0 0 auto;width:24px;height:24px;border:2px solid #d9d9d9;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;transition:background .15s,border-color .15s}
-.multi .mark{border-radius:8px}
+.mark{flex:0 0 auto;width:20px;height:20px;border:2px solid #d4d4d4;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;transition:background .15s,border-color .15s}
 .mark svg{width:14px;height:14px;opacity:0}
-label.opt:has(input:checked){border-color:#e8847d;box-shadow:0 0 0 4px var(--halo)}
+label.opt:has(input:checked){border-color:var(--brand);box-shadow:0 0 0 3px rgba(224,0,0,.12)}
 label.opt input:checked + .mark{background:var(--brand);border-color:var(--brand)}
 label.opt input:checked + .mark svg{opacity:1}
-label.opt:has(input:focus-visible){box-shadow:0 0 0 4px rgba(17,17,17,.2)}
+label.opt:has(input:focus-visible){box-shadow:0 0 0 3px rgba(10,10,10,.25)}
 label.opt.off{opacity:.45;cursor:not-allowed}
 label.opt .txt{flex:1 1 auto}
-textarea,input[type=email]{width:100%;font:inherit;padding:18px 24px;border:1.5px solid var(--line);border-radius:28px;background:#fff;color:var(--text)}
-textarea{min-height:170px;resize:vertical}
-textarea:focus,input[type=email]:focus{outline:none;border-color:#e8847d;box-shadow:0 0 0 4px var(--halo)}
-.err{display:none;color:var(--warn);font-size:.95rem;margin:16px 6px 0}
-.invalid .err{display:block}
-#status{color:var(--warn);margin:18px 6px 0;font-size:.95rem}
-.nav{display:flex;align-items:center;justify-content:space-between;margin-top:52px}
-.btn{display:inline-flex;align-items:center;gap:12px;font:inherit;font-weight:600;font-size:1.05rem;border:0;cursor:pointer;border-radius:999px}
-.btn.primary{background:var(--brand);color:#fff;padding:18px 40px}
-.btn.primary:hover{background:var(--brand-d)}
-.btn.primary:disabled{opacity:.6;cursor:default}
-.btn.back{background:transparent;color:#111;padding:14px 18px}
-.btn.back:hover{background:#f5f5f5}
-.btn:focus-visible{outline:3px solid rgba(17,17,17,.35);outline-offset:3px}
-.btn svg{width:20px;height:20px}
-.hidden{display:none}
+textarea,input[type=email]{width:100%;font:inherit;font-size:15px;padding:14px 16px;border:1px solid var(--line);border-radius:18.8px;background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+textarea{min-height:130px;resize:vertical;margin-top:24px}
+textarea:focus,input[type=email]:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(224,0,0,.12)}
+#status{margin:16px 0 0;color:var(--warn);font-size:14px}
+.nav{display:flex;align-items:center;justify-content:space-between;margin-top:32px}
+
+.thanks h2{margin:0;font-size:24px;line-height:1.375;font-weight:800;letter-spacing:-.02em}
+.thanks .lead{font-size:16px;line-height:26px;color:var(--muted);margin-top:8px}
+.draw{margin-top:40px;padding-top:32px;border-top:1px solid var(--line)}
+.draw h3{margin:0 0 6px;font-size:18px;line-height:28px;font-weight:700}
+.draw .note{margin:0 0 16px;font-size:15px;line-height:24px;color:var(--muted)}
+.draw .row{margin-top:16px}
+.err{display:none;color:var(--warn);font-size:14px;margin-top:8px}
 .hp{position:absolute;left:-9999px;height:0;overflow:hidden}
-.thanks h2{font-size:clamp(1.8rem,5.5vw,2.8rem);line-height:1.12;font-weight:800;letter-spacing:-.02em;margin:0 0 14px}
-.thanks p{color:#444;margin:0 0 10px}
-.draw{margin-top:52px;padding-top:36px;border-top:1.5px solid var(--line)}
-.draw h3{font-size:1.4rem;margin:0 0 8px;font-weight:700}
-.draw .note{color:var(--muted);font-size:.95rem;margin:0 0 20px}
-.draw .row{margin-top:22px}
-@media (max-width:520px){
-.wrap{padding:44px 16px 70px}
-.logo{margin-bottom:48px;height:34px}
-label.opt{padding:16px 20px;gap:14px;border-radius:30px}
-.btn.primary{padding:16px 32px}
+
+@media (min-width:640px){
+h1.title{font-size:48px;line-height:1.05}
+.q h2,.thanks h2{font-size:30px;line-height:36px}
 }
 </style>
 </head>
 <body>
 <div class="topbar" aria-hidden="true"><span id="progress"></span></div>
 <div class="wrap">
-<svg class="logo" viewBox="132 66 788 243" role="img" aria-label="Endurancelife" xmlns="http://www.w3.org/2000/svg"><path d="M264.855 126.474L319.02 181.638C321.801 184.52 321.801 189.197 319.02 192.139L264.855 247.249C262.082 250.158 256.433 252.479 252.444 252.419L218.208 252.122C214.24 252.041 213.309 249.685 216.116 246.878L270.484 192.072C273.359 189.203 273.359 184.527 270.484 181.645L216.406 126.926C213.633 124.045 214.584 121.676 218.566 121.609L252.444 121.338C256.433 121.257 262.082 123.6 264.855 126.474ZM350.773 123.093C330.007 91.7185 294.435 71 253.997 71C189.945 71 138 122.931 138 187.003C138 251.062 189.938 303 253.997 303C294.603 303 330.284 282.099 350.996 250.536C348.512 251.69 345.792 252.459 343.545 252.412L309.295 252.115C305.334 252.034 304.396 249.678 307.21 246.871L361.571 192.065C364.452 189.197 364.452 184.52 361.571 181.638L307.507 126.92C304.733 124.038 305.685 121.669 309.673 121.602L343.545 121.332C345.711 121.298 348.343 122.007 350.773 123.093Z" fill="#000"/><path d="M401.411 238.04H427.483L424.922 252.569H381.51L388.315 213.967L409.459 192.396L401.411 238.04ZM445.32 252.569H427.98L438.758 191.447H456.098L445.32 252.569ZM504.797 205.977H477.877L476.08 216.163H499.354L496.793 230.692H473.519L469.661 252.569H452.322L463.1 191.447H507.359L504.797 205.977ZM552.964 205.977H526.043L524.615 214.076H547.89L545.32 228.646H522.046L520.39 238.04H547.31L544.748 252.569H500.488L511.266 191.447H555.525L552.964 205.977ZM581.906 166.535C581.715 167.621 581.794 168.456 582.144 169.04C582.498 169.597 583.381 169.875 584.794 169.875H593.908C595.067 169.875 595.967 169.667 596.605 169.249C597.277 168.804 597.733 167.899 597.974 166.535L605.748 122.447H623.13L614.854 169.374C613.986 174.301 611.998 178.045 608.89 180.605C605.786 183.138 601.705 184.404 596.646 184.404H576.933C571.874 184.404 568.239 183.138 566.029 180.605C563.852 178.045 563.198 174.301 564.066 169.374L572.341 122.447H589.681L581.906 166.535ZM849.061 121.57C854.119 121.57 857.752 122.851 859.957 125.411C862.162 127.972 862.831 131.716 861.962 136.643L861.642 137.979L843.977 140.065L844.087 139.439C844.278 138.354 844.197 137.533 843.843 136.977C843.494 136.392 842.613 136.1 841.2 136.1H831.237C830.079 136.1 829.163 136.322 828.491 136.768C827.852 137.185 827.412 138.076 827.172 139.439L822.395 166.535C822.203 167.621 822.282 168.456 822.631 169.04C822.985 169.597 823.868 169.875 825.281 169.875H835.244C836.403 169.875 837.302 169.666 837.94 169.249C838.612 168.804 839.069 167.899 839.31 166.535L839.412 165.951L856.349 167.996L856.19 169.374C855.322 174.3 853.334 178.045 850.226 180.605C847.122 183.138 843.04 184.404 837.981 184.404H817.42C812.361 184.404 808.727 183.138 806.517 180.605C804.311 178.045 803.643 174.301 804.512 169.374L810.283 136.643C811.152 131.716 813.141 127.972 816.249 125.411C819.357 122.851 823.441 121.57 828.5 121.57H849.061ZM486.191 155.096L491.948 122.447H509.33L498.552 183.569H481.764L467.384 150.921L461.627 183.569H444.287L455.065 122.447H471.811L486.191 155.096ZM550.756 122.447C555.815 122.447 559.447 123.727 561.652 126.288C563.862 128.821 564.533 132.551 563.664 137.478L558.188 168.539C557.319 173.466 555.33 177.21 552.222 179.771C549.118 182.303 545.037 183.569 539.979 183.569H505.342L516.119 122.447H550.756ZM664.556 122.447C669.615 122.447 673.247 123.727 675.452 126.288C677.662 128.821 678.333 132.551 677.464 137.478L675.683 147.581C675.246 150.058 674.488 152.271 673.41 154.219C672.36 156.167 671.117 157.684 669.682 158.77C668.252 159.827 666.896 160.621 665.616 161.149L676.122 182.705L705.388 122.447H730.824L738.997 183.569H721.191L719.843 171.504H699.154L693.508 183.569H656.279L646.196 162.61H640.177L636.481 183.569H619.142L629.919 122.447H664.556ZM783.748 155.096L789.505 122.447H806.887L796.109 183.569H779.321L764.94 150.921L759.184 183.569H741.845L752.622 122.447H769.368L783.748 155.096ZM910.918 136.977H883.997L882.569 145.076H905.844L903.274 159.646H880L878.344 169.04H905.264L902.702 183.569H858.442L869.22 122.447H913.479L910.918 136.977ZM446.985 136.977H420.064L418.637 145.076H441.911L439.342 159.646H416.067L414.411 169.04H441.331L438.77 183.569H410.964C410.625 182.934 410.185 182.338 409.644 181.805L397.082 168.977L405.287 122.447H449.547L446.985 136.977ZM525.243 169.04H537.241C538.4 169.04 539.299 168.832 539.938 168.414C540.609 167.969 541.065 167.064 541.306 165.7L545.782 140.316C545.974 139.231 545.892 138.409 545.538 137.853C545.189 137.268 544.307 136.977 542.895 136.977H530.896L525.243 169.04ZM705.913 156.975H718.165L715.756 136.016L705.913 156.975ZM642.738 148.082H654.736C655.895 148.082 656.794 147.873 657.433 147.455C658.105 147.01 658.561 146.105 658.802 144.741L659.582 140.316C659.773 139.231 659.692 138.409 659.338 137.853C658.989 137.268 658.107 136.977 656.694 136.977H644.697L642.738 148.082Z" fill="#000"/></svg>
+<svg class="logo" viewBox="0 0 1052 375" role="img" aria-label="Endurancelife" xmlns="http://www.w3.org/2000/svg"><path d="M264.855 126.474L319.02 181.638C321.801 184.52 321.801 189.197 319.02 192.139L264.855 247.249C262.082 250.158 256.433 252.479 252.444 252.419L218.208 252.122C214.24 252.041 213.309 249.685 216.116 246.878L270.484 192.072C273.359 189.203 273.359 184.527 270.484 181.645L216.406 126.926C213.633 124.045 214.584 121.676 218.566 121.609L252.444 121.338C256.433 121.257 262.082 123.6 264.855 126.474ZM350.773 123.093C330.007 91.7185 294.435 71 253.997 71C189.945 71 138 122.931 138 187.003C138 251.062 189.938 303 253.997 303C294.603 303 330.284 282.099 350.996 250.536C348.512 251.69 345.792 252.459 343.545 252.412L309.295 252.115C305.334 252.034 304.396 249.678 307.21 246.871L361.571 192.065C364.452 189.197 364.452 184.52 361.571 181.638L307.507 126.92C304.733 124.038 305.685 121.669 309.673 121.602L343.545 121.332C345.711 121.298 348.343 122.007 350.773 123.093Z" fill="#000"/><path d="M401.411 238.04H427.483L424.922 252.569H381.51L388.315 213.967L409.459 192.396L401.411 238.04ZM445.32 252.569H427.98L438.758 191.447H456.098L445.32 252.569ZM504.797 205.977H477.877L476.08 216.163H499.354L496.793 230.692H473.519L469.661 252.569H452.322L463.1 191.447H507.359L504.797 205.977ZM552.964 205.977H526.043L524.615 214.076H547.89L545.32 228.646H522.046L520.39 238.04H547.31L544.748 252.569H500.488L511.266 191.447H555.525L552.964 205.977ZM581.906 166.535C581.715 167.621 581.794 168.456 582.144 169.04C582.498 169.597 583.381 169.875 584.794 169.875H593.908C595.067 169.875 595.967 169.667 596.605 169.249C597.277 168.804 597.733 167.899 597.974 166.535L605.748 122.447H623.13L614.854 169.374C613.986 174.301 611.998 178.045 608.89 180.605C605.786 183.138 601.705 184.404 596.646 184.404H576.933C571.874 184.404 568.239 183.138 566.029 180.605C563.852 178.045 563.198 174.301 564.066 169.374L572.341 122.447H589.681L581.906 166.535ZM849.061 121.57C854.119 121.57 857.752 122.851 859.957 125.411C862.162 127.972 862.831 131.716 861.962 136.643L861.642 137.979L843.977 140.065L844.087 139.439C844.278 138.354 844.197 137.533 843.843 136.977C843.494 136.392 842.613 136.1 841.2 136.1H831.237C830.079 136.1 829.163 136.322 828.491 136.768C827.852 137.185 827.412 138.076 827.172 139.439L822.395 166.535C822.203 167.621 822.282 168.456 822.631 169.04C822.985 169.597 823.868 169.875 825.281 169.875H835.244C836.403 169.875 837.302 169.666 837.94 169.249C838.612 168.804 839.069 167.899 839.31 166.535L839.412 165.951L856.349 167.996L856.19 169.374C855.322 174.3 853.334 178.045 850.226 180.605C847.122 183.138 843.04 184.404 837.981 184.404H817.42C812.361 184.404 808.727 183.138 806.517 180.605C804.311 178.045 803.643 174.301 804.512 169.374L810.283 136.643C811.152 131.716 813.141 127.972 816.249 125.411C819.357 122.851 823.441 121.57 828.5 121.57H849.061ZM486.191 155.096L491.948 122.447H509.33L498.552 183.569H481.764L467.384 150.921L461.627 183.569H444.287L455.065 122.447H471.811L486.191 155.096ZM550.756 122.447C555.815 122.447 559.447 123.727 561.652 126.288C563.862 128.821 564.533 132.551 563.664 137.478L558.188 168.539C557.319 173.466 555.33 177.21 552.222 179.771C549.118 182.303 545.037 183.569 539.979 183.569H505.342L516.119 122.447H550.756ZM664.556 122.447C669.615 122.447 673.247 123.727 675.452 126.288C677.662 128.821 678.333 132.551 677.464 137.478L675.683 147.581C675.246 150.058 674.488 152.271 673.41 154.219C672.36 156.167 671.117 157.684 669.682 158.77C668.252 159.827 666.896 160.621 665.616 161.149L676.122 182.705L705.388 122.447H730.824L738.997 183.569H721.191L719.843 171.504H699.154L693.508 183.569H656.279L646.196 162.61H640.177L636.481 183.569H619.142L629.919 122.447H664.556ZM783.748 155.096L789.505 122.447H806.887L796.109 183.569H779.321L764.94 150.921L759.184 183.569H741.845L752.622 122.447H769.368L783.748 155.096ZM910.918 136.977H883.997L882.569 145.076H905.844L903.274 159.646H880L878.344 169.04H905.264L902.702 183.569H858.442L869.22 122.447H913.479L910.918 136.977ZM446.985 136.977H420.064L418.637 145.076H441.911L439.342 159.646H416.067L414.411 169.04H441.331L438.77 183.569H410.964C410.625 182.934 410.185 182.338 409.644 181.805L397.082 168.977L405.287 122.447H449.547L446.985 136.977ZM525.243 169.04H537.241C538.4 169.04 539.299 168.832 539.938 168.414C540.609 167.969 541.065 167.064 541.306 165.7L545.782 140.316C545.974 139.231 545.892 138.409 545.538 137.853C545.189 137.268 544.307 136.977 542.895 136.977H530.896L525.243 169.04ZM705.913 156.975H718.165L715.756 136.016L705.913 156.975ZM642.738 148.082H654.736C655.895 148.082 656.794 147.873 657.433 147.455C658.105 147.01 658.561 146.105 658.802 144.741L659.582 140.316C659.773 139.231 659.692 138.409 659.338 137.853C658.989 137.268 658.107 136.977 656.694 136.977H644.697L642.738 148.082Z" fill="#000"/></svg>
 
 <div id="survey">
-<p class="intro" id="intro">Anonymous &middot; 12 questions &middot; about 3 minutes. We don't ask for your name or email, and nothing here is linked to you.</p>
-<div class="qlabel" id="qlabel"><span id="qn">Question 1</span> <span class="of" id="qof">of 12</span></div>
+
+<div id="welcome">
+<p class="eyebrow">Endurancelife &middot; 2027</p>
+<h1 class="title">Help shape our 2027 trail running events</h1>
+<p class="lead">Thanks for being part of the Endurancelife community. This short survey takes about 4 minutes and helps us plan events, pricing and race weekends around what runners actually want.</p>
+<p class="fine">There are no right or wrong answers, and your responses are anonymous. We'll use them only to improve our events. As a thank you, you can enter our prize draw for a free 2027 race entry at the end, using a separate form that can't be linked to your answers. The draw closes on 20 December.</p>
+<button type="button" class="btn primary lg" id="start">Start survey<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+</div>
+
+<div id="quiz" class="hidden">
+<p class="qlabel" id="qlabel"><span id="qn">Question 1</span> <span class="of" id="qof">of 12</span></p>
 <form id="form" novalidate>
 <div id="questions"></div>
 <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 <div id="status" role="alert"></div>
 <div class="nav">
-<button type="button" class="btn back" id="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
+<button type="button" class="btn ghost" id="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
 <button type="button" class="btn primary" id="next">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-<button type="submit" class="btn primary hidden" id="submit">Submit survey<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+<button type="submit" class="btn primary hidden" id="submit">Submit<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
 </div>
 </form>
 </div>
 
+</div>
+
 <div id="thanks" class="thanks hidden">
-<h2>Thank you, your answers are in.</h2>
-<p>That's your survey done and submitted.</p>
+<p class="eyebrow">Thank you</p>
+<h2 style="margin-top:24px">Your answers are in.</h2>
+<p class="lead">That's your survey done and submitted.</p>
 <div class="draw" id="drawCard">
 <h3>Optional: enter the prize draw</h3>
 <p class="note">Your email goes into a completely separate list from your survey answers, so the two can't be matched up. Skip this if you'd rather not enter.</p>
@@ -158,7 +174,7 @@ var QUESTIONS = [
 
 var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 var qBox = document.getElementById('questions');
-var current = 0;
+var current = -1;
 
 function el(tag, attrs, text){
 var e = document.createElement(tag);
@@ -170,12 +186,12 @@ return e;
 QUESTIONS.forEach(function(q){
 var sec = el('section', {id:'fs-'+q.id, class:'q hidden', role:'group', 'aria-labelledby':'h-'+q.id});
 sec.appendChild(el('h2', {id:'h-'+q.id, tabindex:'-1'}, q.text));
-var hint = q.type==='single' ? 'Choose one' : q.type==='multi' ? (q.max ? 'Pick up to '+q.max : 'Tick all that apply') : 'Optional';
-sec.appendChild(el('span',{class:'hint'},hint));
+if (q.type==='multi' && q.max) sec.appendChild(el('p',{class:'hint'},'Pick up to '+q.max));
+else if (q.type==='multi') sec.appendChild(el('p',{class:'hint'},'Select all that apply'));
 if (q.type==='text'){
-sec.appendChild(el('textarea',{name:q.id,maxlength:'1000',rows:'6','aria-labelledby':'h-'+q.id}));
+sec.appendChild(el('textarea',{name:q.id,maxlength:'1000',rows:'5','aria-labelledby':'h-'+q.id}));
 } else {
-var list = el('div',{class:'opts'+(q.type==='multi'?' multi':'')});
+var list = el('div',{class:'opts'});
 q.options.forEach(function(opt){
 var lab = el('label',{class:'opt'});
 lab.appendChild(el('input',{type:q.type==='single'?'radio':'checkbox',name:q.id,value:opt}));
@@ -186,7 +202,6 @@ lab.appendChild(el('span',{class:'txt'},opt));
 list.appendChild(lab);
 });
 sec.appendChild(list);
-sec.appendChild(el('div',{class:'err'}, q.type==='single' ? '⚠ Please choose an answer to continue.' : '⚠ Please choose at least one answer to continue.'));
 }
 qBox.appendChild(sec);
 });
@@ -199,21 +214,37 @@ function isValid(q){
 return q.optional || q.type==='text' || checkedValues(q).length > 0;
 }
 
+function updateNav(){
+if (current < 0) return;
+var ok = isValid(QUESTIONS[current]);
+document.getElementById('next').disabled = !ok;
+document.getElementById('submit').disabled = !ok;
+}
+
+function showWelcome(){
+current = -1;
+document.getElementById('welcome').classList.remove('hidden');
+document.getElementById('quiz').classList.add('hidden');
+document.getElementById('progress').style.width = '0%';
+window.scrollTo({top:0,behavior:'smooth'});
+}
+
 function showStep(i, focus){
 current = i;
 var total = QUESTIONS.length;
+document.getElementById('welcome').classList.add('hidden');
+document.getElementById('quiz').classList.remove('hidden');
 QUESTIONS.forEach(function(q, qi){
 document.getElementById('fs-'+q.id).classList.toggle('hidden', qi !== i);
 });
 document.getElementById('qn').textContent = 'Question '+(i+1);
 document.getElementById('qof').textContent = 'of '+total;
 document.getElementById('progress').style.width = ((i+1)/total*100)+'%';
-document.getElementById('intro').classList.toggle('hidden', i !== 0);
-document.getElementById('back').style.visibility = i===0 ? 'hidden' : 'visible';
 var last = i === total-1;
 document.getElementById('next').classList.toggle('hidden', last);
 document.getElementById('submit').classList.toggle('hidden', !last);
 document.getElementById('status').textContent = '';
+updateNav();
 if (focus){
 window.scrollTo({top:0,behavior:'smooth'});
 document.getElementById('h-'+QUESTIONS[i].id).focus({preventScroll:true});
@@ -233,10 +264,10 @@ i.parentNode.classList.toggle('off', off);
 });
 }
 
-document.getElementById('form').addEventListener('change', function(e){
-var sec = e.target.closest('.q'); if (sec) sec.classList.remove('invalid');
+document.getElementById('form').addEventListener('change', function(){
 document.getElementById('status').textContent = '';
 updateLimits();
+updateNav();
 });
 
 document.getElementById('form').addEventListener('keydown', function(e){
@@ -247,14 +278,15 @@ if (current < QUESTIONS.length-1) goNext();
 });
 
 function goNext(){
-var q = QUESTIONS[current];
-var sec = document.getElementById('fs-'+q.id);
-if (!isValid(q)){ sec.classList.add('invalid'); return; }
+if (current < 0 || !isValid(QUESTIONS[current])) return;
 if (current < QUESTIONS.length-1) showStep(current+1, true);
 }
 
+document.getElementById('start').addEventListener('click', function(){ showStep(0, true); });
 document.getElementById('next').addEventListener('click', goNext);
-document.getElementById('back').addEventListener('click', function(){ if (current>0) showStep(current-1, true); });
+document.getElementById('back').addEventListener('click', function(){
+if (current > 0) showStep(current-1, true); else showWelcome();
+});
 
 function post(params){
 var body = new URLSearchParams(params).toString();
@@ -270,7 +302,6 @@ var status = document.getElementById('status'); status.textContent='';
 for (var i = 0; i < QUESTIONS.length; i++){
 if (!isValid(QUESTIONS[i])){
 showStep(i, true);
-document.getElementById('fs-'+QUESTIONS[i].id).classList.add('invalid');
 status.textContent = 'Please answer this question before submitting.';
 return;
 }
@@ -286,7 +317,7 @@ document.getElementById('thanks').classList.remove('hidden');
 document.getElementById('progress').style.width = '100%';
 window.scrollTo(0,0);
 }).catch(function(){
-btn.disabled=false; btn.firstChild.textContent='Submit survey';
+btn.disabled=false; btn.firstChild.textContent='Submit';
 status.textContent='Sorry, that did not send. Please check your connection and try again.';
 });
 });
@@ -307,7 +338,6 @@ err.textContent='Sorry, that did not send. Please try again.'; err.style.display
 });
 });
 
-showStep(0, false);
 updateLimits();
 </script>
 </body>
